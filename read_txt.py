@@ -44,16 +44,19 @@ def combine_ids_and_texts(ids, texts):
     ids_and_texts = []
     index = 0
     for line in ids:
-        ids_and_texts.insert(index, (ids[index].__str__() + texts[index].__str__()))
+        ids_and_texts.insert(index, ("'" + ids[index].__str__() + "' , '" + texts[index].__str__() + "'"))
         index +=1
     return ids_and_texts
 
-
-def run():
+def get_list_of_ids_and_texts():
     list_for_texts = get_lines(file_name).copy()
     list_for_ids = split_lines(list_for_texts.copy()).copy()
     ids_and_text = combine_ids_and_texts(get_ids(list_for_ids), get_texts(list_for_texts))
+    return ids_and_text
 
-    print_lines(ids_and_text)
-
-run()
+def get_dataframe_from_txt():
+    print(get_list_of_ids_and_texts()[1])
+    ids = get_ids(split_lines(get_lines(file_name)))
+    texts = get_texts(get_lines(file_name))
+    df = pd.DataFrame(list(zip(ids, texts)), columns=["id", "text"])
+    return df
