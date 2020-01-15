@@ -34,15 +34,3 @@ def print_sheet_information(sheet):
     print("строки где смерть")
     for i in get_dead_indexes(sheet):
         print(sheet.row_values(i))
-
-
-def run():
-     sheet = get_sheet_from_xls(file_name)
-
-     print(sheet)
-
-     print(type(sheet))
-
-
-
-
