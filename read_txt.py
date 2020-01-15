@@ -30,7 +30,7 @@ def get_ids(list_for_ids):
     ids = []
     index = 0
     for i in list_for_ids:
-        ids.insert(index, list_for_ids[index][:2])
+        ids.insert(index, list_for_ids[index][0])
         index += 1
     return ids
 
@@ -55,7 +55,6 @@ def get_list_of_ids_and_texts():
     return ids_and_text
 
 def get_dataframe_from_txt():
-    print(get_list_of_ids_and_texts()[1])
     ids = get_ids(split_lines(get_lines(file_name)))
     texts = get_texts(get_lines(file_name))
     df = pd.DataFrame(list(zip(ids, texts)), columns=["id", "text"])
