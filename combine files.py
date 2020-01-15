@@ -20,7 +20,7 @@ df_texts = df_texts.set_index(df_texts.iloc[:,0].values)
 df_texts = df_texts.drop_duplicates(subset='id', keep='last')
 # print(df_texts)
 
-df_result = concatinate_dataframes(df_xls, df_texts)
+df_result = concatenate_dataframes(df_xls, df_texts)
 print(df_result)
 
 
