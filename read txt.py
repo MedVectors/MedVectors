@@ -2,12 +2,10 @@
 import pandas as pd
 import re
 
-
 file_name = "C:/Users/admin/Downloads/Telegram Desktop/ana.txt"
 utf8 = "utf8"
 
 def get_lines(filename):
-    # лист где каждый элемент это стока из файлв
     text = []
     with open(file_name, "rb") as f:
         line = f.readline().decode(utf8)
@@ -22,46 +20,19 @@ def print_lines(list):
     for i in list:
         print(i)
 
+def split_lines(lines):
+    splited_lines = []
+    for string in lines:
+        splited_lines.append(string.split())
+    return splited_lines
 
-lines = get_lines(file_name)
-# print_lines(lines)
-
-
-# сортировать стрички в 3 разныл листа
-import re
-print()
-print(lines[2])
-
-# split lines
-splited_lines = []
-for string in lines:
-    splited_lines.append(string.split())
-
-# print()
-# for i in splited_lines[:3]:
-#     print(i)
-
-
-# print(type(splited_lines))
-
-
-list_for_texts = lines.copy()
-list_for_ids = splited_lines.copy()
-
-# первые два элемента
-def get_ids(list):
+def get_ids(list_for_ids):
     ids = []
-    count = 0
+    index = 0
     for i in list_for_ids:
-        ids.insert(count, list_for_ids[count][:2])
-        count += 1
+        ids.insert(index, list_for_ids[index][:2])
+        index += 1
     return ids
-
-
-
-
-
-# в ноы список записать то что русские буквы
 
 def get_texts(list_for_texts):
     texts = []
@@ -69,17 +40,20 @@ def get_texts(list_for_texts):
         texts.append(re.sub("[^а-яА-Я]+", ' ', i))
     return texts
 
-ids = get_ids(list_for_ids)
-texts = get_texts(list_for_texts)
+def combine_ids_and_texts(ids, texts):
+    ids_and_texts = []
+    index = 0
+    for line in ids:
+        ids_and_texts.insert(index, (ids[index].__str__() + texts[index].__str__()))
+        index +=1
+    return ids_and_texts
 
-print(ids[2])
-print(texts[2])
-# test
 
+def run():
+    list_for_texts = get_lines(file_name).copy()
+    list_for_ids = split_lines(list_for_texts.copy()).copy()
+    ids_and_text = combine_ids_and_texts(get_ids(list_for_ids), get_texts(list_for_texts))
 
+    print_lines(ids_and_text)
 
-def main():
-    get_lines(file_name)
-    get_ids(list_for_ids)
-    get_texts(list_for_texts)
-
+run()
