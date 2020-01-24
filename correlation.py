@@ -72,4 +72,5 @@ def get_short_df():
 # plot_age_target_scatter()
 # plot_target_correlations()
 
-
+result_file_name = "short_dataset.csv"
+get_short_df().to_csv(result_file_name)
