@@ -2,7 +2,9 @@ from numba import jit, cuda
 import numba
 import read_txt as txt
 import pandas as pd
+
 pd.set_option('display.max_columns', 30)
+
 
 @numba.jit
 def run(df, number_of_iterations, col_name):
@@ -14,6 +16,7 @@ def run(df, number_of_iterations, col_name):
             index += 1
         index += 1
     return df
+
 
 def get_unduplicated_lines(df):
     print("rows: " + df.shape[0].__str__())
@@ -58,4 +61,3 @@ def get_unduplicated_lines(df):
     print("duplicated: " + df["id"].duplicated().sum().__str__())
 
     return df
-

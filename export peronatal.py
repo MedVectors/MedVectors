@@ -5,6 +5,7 @@ from pandas import read_excel
 
 file_name = "C:/Users/admin/Downloads/Telegram Desktop/perinatal.xlsx"
 
+
 def load_dataframe_from_file(filename):
     # load the file
     xl_file = pd.ExcelFile(filename)
@@ -14,8 +15,5 @@ def load_dataframe_from_file(filename):
     data_frame = xl_file.parse(sheet_name)
     return data_frame
 
-my_data_frame =  load_dataframe_from_file(file_name)
 
-
-
-
+my_data_frame = load_dataframe_from_file(file_name)

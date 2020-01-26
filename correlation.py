@@ -19,42 +19,51 @@ df = df.rename(columns={'ИБС_насл': 'CHD'})
 
 print(df.columns)
 
+
 def plot_full_correlation_matrix():
     correlation = df.corr()
     plt.matshow(correlation)
     cb = plt.colorbar()
     plt.show()
 
+
 def plot_weight_target_scatter():
-    df.plot(kind='scatter', x = "вес", y = "target")
+    df.plot(kind='scatter', x="вес", y="target")
     plt.show()
+
 
 def plot_target_weight_bar():
-    df.plot(kind='bar', x = "target", y = "вес")
+    df.plot(kind='bar', x="target", y="вес")
     plt.show()
+
 
 def plot_height_target_scatter():
-    df.plot(kind='scatter', x = "рост", y = "target")
+    df.plot(kind='scatter', x="рост", y="target")
     plt.show()
+
 
 def plot_age_target_scatter():
-    df.plot(kind='scatter', x = "mother_age", y = "target")
+    df.plot(kind='scatter', x="mother_age", y="target")
     plt.show()
 
+
 def plot_grouped_mother_age():
-    df[['mother_age']].plot(kind='hist',bins=[15,20,25,30,35,40,45,50,55], rwidth=0.8)
+    df[['mother_age']].plot(kind='hist', bins=[15, 20, 25, 30, 35, 40, 45, 50, 55], rwidth=0.8)
     plt.show()
+
 
 def plot_grouped_target():
     df[['target']].plot(kind='hist', rwidth=0.8)
     plt.show()
 
+
 def plot_target_correlations():
-    cor_df = df.iloc[:,:60]
+    cor_df = df.iloc[:, :60]
     cor = cor_df[cor_df.columns[1:]].corr()['target'][1:]
     cor = abs(cor)
     cor.plot(kind='bar')
     plt.show()
+
 
 def plot_target_correlation_short():
     correlated_df = df[["target", "szrp", "OAA", "abortion", "caesarean", "GB", "CHD"]]
@@ -63,8 +72,10 @@ def plot_target_correlation_short():
     cor.plot(kind='bar')
     plt.show()
 
+
 def get_short_df():
     return df[["target", "szrp", "OAA", "abortion", "caesarean", "GB", "CHD", "text_1", "text_2", "text_3", "text_4"]]
+
 
 # plot_target_weight_bar()
 # plot_weight_target_scatter()

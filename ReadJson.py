@@ -1,9 +1,7 @@
 import re
 import string
-import pymystem3
 
 from stop_words import get_stop_words
-import nltk
 
 file = open('C:/Users/admin/Documents/Folder/bold.json', "r", encoding="utf8")
 

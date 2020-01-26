@@ -13,15 +13,17 @@ pd.set_option('display.max_rows', 10)
 
 file_name = "short_dataset.csv"
 
+
 def read_data():
     df = pd.read_csv(file_name)
     df = df.drop("Unnamed: 0", axis=1)
-    df = df.rename(columns={'target' : 'apgar'})
+    df = df.rename(columns={'target': 'apgar'})
 
     # target binarization
     df['target'] = df['apgar'].apply(lambda x: 1 if x > 7 else 0)
     df = df.drop("apgar", axis=1)
     return df
+
 
 def put_text_in_one_colunm():
     df_text = df.copy()
@@ -32,10 +34,11 @@ def put_text_in_one_colunm():
     df_text["text_4"] = df_text["text_4"].astype(str)
 
     df_text["text_1"] = df_text["text_1"] + " " + df_text["text_2"]
-    df_text["text_1"] = df_text["text_1"] + " " +  df_text["text_3"]
+    df_text["text_1"] = df_text["text_1"] + " " + df_text["text_3"]
     df_text["text_1"] = df_text["text_1"] + " " + df_text["text_4"]
     # print(df_text.loc[:, "text_1"])
     return df_text
+
 
 def print_all_not_empty_text(text):
     for i in range(text.shape[0]):
@@ -43,13 +46,14 @@ def print_all_not_empty_text(text):
         if cur != "":
             print(str(i) + ":  " + str(cur))
 
+
 def predict_without_text():
     print("==============================================================")
     print("start prediction part...")
 
     # split
     y = df["target"]
-    X = df.iloc[:,:-5] # without target and without texts
+    X = df.iloc[:, :-5]  # without target and without texts
     X = X.fillna(0)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=7)
@@ -66,14 +70,15 @@ def predict_without_text():
     print("ACC TEST: " + str(accuracy_test))
     print("ACC TRAIN: " + str(accuracy_train))
 
-    fpr, tpr, _ = metrics.roc_curve(np.array(y_train), clf.predict_proba(X_train)[:,1])
-    auc_train = metrics.auc(fpr,tpr)
+    fpr, tpr, _ = metrics.roc_curve(np.array(y_train), clf.predict_proba(X_train)[:, 1])
+    auc_train = metrics.auc(fpr, tpr)
 
-    fpr, tpr, _ = metrics.roc_curve(np.array(y_test), clf.predict_proba(X_test)[:,1])
-    auc_test = metrics.auc(fpr,tpr)
+    fpr, tpr, _ = metrics.roc_curve(np.array(y_test), clf.predict_proba(X_test)[:, 1])
+    auc_test = metrics.auc(fpr, tpr)
 
     print("AUC TEST: " + str(auc_test))
     print("AUC TRAIN: " + str(auc_train))
+
 
 # replace nan with empty
 def replace_nan_with_empty():
@@ -81,6 +86,7 @@ def replace_nan_with_empty():
         cur = df_text.loc[i, "text_1"]
         if cur == "nan nan nan nan":
             df_text.loc[i, "text_1"] = ""
+
 
 def remove_single_letters(text):
     text = re.sub(r" а ", " ", text)
@@ -117,6 +123,7 @@ def remove_single_letters(text):
     text = re.sub(r" ъ ", " ", text)
     return text
 
+
 def remove_spaces():
     for i in range(df_text.shape[0]):
         text = df_text.loc[i, "text_1"]
@@ -129,15 +136,18 @@ def remove_spaces():
         text = re.sub(r"  ", "", text)
         df_text.loc[i, "text_1"] = text
 
+
 def rename_column(df_text):
     df_text = df_text.drop("text_2", axis=1)
     df_text = df_text.drop("text_3", axis=1)
     df_text = df_text.drop("text_4", axis=1)
     return df_text
 
+
 def delete_columns(df_text):
-    df_text = df_text.rename(columns={'text_1' : 'text'})
+    df_text = df_text.rename(columns={'text_1': 'text'})
     return df_text
+
 
 df = read_data()
 df_text = put_text_in_one_colunm()
@@ -153,4 +163,3 @@ predict_without_text()
 #
 # result_file_name = "cleaned_text.csv"
 # df_text.to_csv(result_file_name)
-
