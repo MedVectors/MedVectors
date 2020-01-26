@@ -1,3 +1,5 @@
+# read data from xla (library)
+# 2nd step
 import xlrd
 import pandas as pd
 

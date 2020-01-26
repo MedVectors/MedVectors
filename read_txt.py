@@ -1,4 +1,5 @@
-# read big txt file info dataframe
+# read big txt file info dataframe (library)
+# 1st step
 import pandas as pd
 import re
 
@@ -8,7 +9,7 @@ utf8 = "utf8"
 
 def get_lines(filename):
     text = []
-    with open(file_name, "rb") as f:
+    with open(filename, "rb") as f:
         line = f.readline().decode(utf8)
         counter = 1
         while line:
@@ -18,8 +19,8 @@ def get_lines(filename):
     return text
 
 
-def print_lines(list):
-    for i in list:
+def print_lines(lines):
+    for i in lines:
         print(i)
 
 

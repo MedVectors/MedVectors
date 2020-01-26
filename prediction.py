@@ -1,12 +1,13 @@
+# 9
+# 10
+# predict
 import re
-
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
 from sklearn import metrics
+from sklearn.metrics import accuracy_score
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', 10)
@@ -80,12 +81,11 @@ def predict_without_text():
     print("AUC TRAIN: " + str(auc_train))
 
 
-# replace nan with empty
-def replace_nan_with_empty():
-    for i in range(df_text.shape[0]):
-        cur = df_text.loc[i, "text_1"]
+def replace_nan_with_empty(df):
+    for i in range(df.shape[0]):
+        cur = df.loc[i, "text_1"]
         if cur == "nan nan nan nan":
-            df_text.loc[i, "text_1"] = ""
+            df.loc[i, "text_1"] = ""
 
 
 def remove_single_letters(text):
@@ -137,14 +137,14 @@ def remove_spaces():
         df_text.loc[i, "text_1"] = text
 
 
+def remove_columns(df):
+    df = df.drop("text_2", axis=1)
+    df = df.drop("text_3", axis=1)
+    df = df.drop("text_4", axis=1)
+    return df
+
+
 def rename_column(df_text):
-    df_text = df_text.drop("text_2", axis=1)
-    df_text = df_text.drop("text_3", axis=1)
-    df_text = df_text.drop("text_4", axis=1)
-    return df_text
-
-
-def delete_columns(df_text):
     df_text = df_text.rename(columns={'text_1': 'text'})
     return df_text
 
@@ -154,12 +154,11 @@ df_text = put_text_in_one_colunm()
 replace_nan_with_empty()
 remove_spaces()
 print_all_not_empty_text(df_text)
+df_text = remove_columns(df_text)
 df_text = rename_column(df_text)
-df_text = delete_columns(df_text)
 
 predict_without_text()
 
 # print(df_text)
-#
-# result_file_name = "cleaned_text.csv"
-# df_text.to_csv(result_file_name)
+
+df_text.to_csv("cleaned_text.csv")

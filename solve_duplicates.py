@@ -1,17 +1,16 @@
 from numba import jit, cuda
 import numba
-import read_txt as txt
 import pandas as pd
 
 pd.set_option('display.max_columns', 30)
 
 
 @numba.jit
-def run(df, number_of_iterations, col_name):
+def run(df, dataset_size, new_col_name):
     index = 0
-    while index < number_of_iterations:
+    while index < dataset_size:
         if df.loc[index, "id"] == df.loc[index + 1, "id"]:
-            df.loc[index, col_name] = df.loc[index + 1, "text"]
+            df.loc[index, new_col_name] = df.loc[index + 1, "text"]
             df = df.drop(index + 1)
             index += 1
         index += 1

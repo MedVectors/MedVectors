@@ -1,4 +1,6 @@
+# 15
 from docutils.nodes import Sequential
+from keras.layers import Dense, Activation, Dropout
 from sklearn import metrics
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
@@ -9,6 +11,7 @@ import numpy as np
 df = pd.read_csv("final.csv")
 df = df.drop("Unnamed: 0", axis=1)
 df = df.drop("level_0", axis=1)
+# TODO print and check how many rows affected
 df = df.dropna(how='any', subset=['200'])
 df = df.reset_index()
 print(df)
@@ -20,20 +23,20 @@ def predict_random_forest():
 
     # split
     y = df["target"]
-    X = df.copy()
-    X = df.drop("target", axis=1)
-    X = df.drop("text", axis=1)
-    X = X.fillna(0)
+    x = df.copy()
+    x = df.drop("target", axis=1)
+    x = df.drop("text", axis=1)
+    x = x.fillna(0)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=7)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=7)
 
     print("start training...")
     clf = RandomForestClassifier()
-    clf.fit(X_train, y_train)
+    clf.fit(x_train, y_train)
 
     print("start prediction...")
-    predicted_train = clf.predict(X_train)
-    predicted_test = clf.predict(X_test)
+    predicted_train = clf.predict(x_train)
+    predicted_test = clf.predict(x_test)
 
     accuracy_train = accuracy_score(predicted_train, y_train)
     accuracy_test = accuracy_score(predicted_test, y_test)
@@ -41,10 +44,10 @@ def predict_random_forest():
     print("ACC TEST: " + str(accuracy_test))
     print("ACC TRAIN: " + str(accuracy_train))
 
-    fpr, tpr, _ = metrics.roc_curve(np.array(y_train), clf.predict_proba(X_train)[:, 1])
+    fpr, tpr, _ = metrics.roc_curve(np.array(y_train), clf.predict_proba(x_train)[:, 1])
     auc_train = metrics.auc(fpr, tpr)
 
-    fpr, tpr, _ = metrics.roc_curve(np.array(y_test), clf.predict_proba(X_test)[:, 1])
+    fpr, tpr, _ = metrics.roc_curve(np.array(y_test), clf.predict_proba(x_test)[:, 1])
     auc_test = metrics.auc(fpr, tpr)
 
     print("AUC TEST: " + str(auc_test))

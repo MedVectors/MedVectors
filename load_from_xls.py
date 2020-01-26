@@ -1,5 +1,3 @@
-# считывает файл
-
 import pandas as pd
 from pandas import read_excel
 
