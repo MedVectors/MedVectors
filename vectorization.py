@@ -2,7 +2,7 @@ import pandas as pd
 from gensim.test.utils import get_tmpfile
 from gensim.models import Word2Vec
 
-pd.set_option('display.max_columns', None)
+# pd.set_option('display.max_columns', None)
 
 def read_file():
     file_name = "cleaned_text.csv"
