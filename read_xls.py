@@ -1,16 +1,21 @@
+# read data from xla (library)
+# 2nd step
 import xlrd
 import pandas as pd
 
 file_name = "C:/Users/admin/Downloads/Telegram Desktop/perinatal.xlsx"
 sheet_name = "L1"
 
+
 def get_sheet_from_xls(file_name):
     wb = xlrd.open_workbook(file_name)
     sheet = wb.sheet_by_index(0)
     return sheet
 
+
 def get_dataframe_from_xls():
     return pd.read_excel(file_name, sheet_name)
+
 
 def get_dead_indexes(sheet):
     dead = []
@@ -19,6 +24,7 @@ def get_dead_indexes(sheet):
             print(i, sheet.cell_value(i, 23))
             dead.append(i)
     return dead
+
 
 def print_sheet_information(sheet):
     print("Строк всего " + sheet.nrows.__str__())
