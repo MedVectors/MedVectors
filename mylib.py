@@ -9,13 +9,20 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from gensim.test.utils import get_tmpfile
 from gensim.models import Word2Vec
+import preprocessing as pp
 import matplotlib.pyplot as plt
+from sklearn.metrics import classification_report
+from sklearn.model_selection import train_test_split
+from keras.models import Sequential
+from keras.layers import Dense
+import mylib as my
+import pandas as pd
 
-txt_file_name = "C:/Users/admin/Downloads/Telegram Desktop/ana.txt"
+txt_file_name = "C:/Users/admin/Downloads/Telegram Desktop/anamnesis-fixed-perinatal.txt"
 utf8 = "utf8"
 xls_file_name = "C:/Users/admin/Downloads/Telegram Desktop/perinatal.xlsx"
 sheet_name = "L1"
-concatenated_dataframe_file_name = "result_no_duplicates.csv"
+concatenated_dataframe_file_name = "files/result_no_duplicates.csv"
 apgar_file_name = "only_apgar.csv"
 relevant_columns_file_name = "short_dataset.csv"
 cleaned_text_file_name = "cleaned_text.csv"
@@ -26,11 +33,12 @@ cleaned2 = "cleaned2.csv"
 def get_lines(filename):
     text = []
     with open(filename, "rb") as f:
-        line = f.readline().decode(utf8)
+        line = f.readline().decode('utf8')
         counter = 1
         while line:
+            print(line)
             text.insert(counter, line.strip())
-            line = f.readline().decode(utf8)
+            line = f.readline().decode('utf8')# .decode(utf8)
             counter += 1
     return text
 
@@ -79,16 +87,19 @@ def get_list_of_ids_and_texts():
     return ids_and_text
 
 
-# resulting method
 def get_dataframe_from_txt():
     ids = get_ids(split_lines(get_lines(txt_file_name)))
     texts = get_texts(get_lines(txt_file_name))
     df = pd.DataFrame(list(zip(ids, texts)), columns=["id", "text"])
+    for i in range(df.shape[0]):
+        cur = df.loc[i]
+        cur = pp.pre_processing(cur)
+        print(i + 1, "out of ", df.shape[0], " ", cur[1])
+        df.loc[i] = cur
     return df
 
 
-# read data from xla (library)
-# 2nd step
+
 
 def get_sheet_from_xls(file_name):
     wb = xlrd.open_workbook(file_name)
@@ -194,6 +205,8 @@ def save_dataframe_to_file(dataframe, file_name):
 
 def concatenate_dataframes(df1, df2):
     result = pd.concat([df1, df2], axis=1, sort=True)
+    # убрать те где текст нан
+    # result = result.dropna(how='any', subset=['text'])
     return result
 
 
@@ -224,7 +237,7 @@ def leave_only_relevant_columns(file_name):
     df = df.rename(columns={'t5': 'text_5'})
     df = df.rename(columns={'t6': 'text_6'})
 
-    return df[["apgar", "szrp", "OAA", "abortion", "caesarean", "GB", "CHD", "text_1", "text_2", "text_3", "text_4",  "text_5", "text_6"]]
+    return df[["apgar", "szrp", "OAA", "abortion", "caesarean", "GB", "CHD", "text_1", "text_2", "text_3", "text_4"]] # ,  "text_5", "text_6"]]
 
 
 def replace_nan_with_empty(df):
@@ -308,11 +321,11 @@ def put_text_in_one_colunm(file_name):
     df_text = df_text.drop("text_3", axis=1)
     df_text = df_text.drop("text_4", axis=1)
 
-
     df_text = df_text.dropna(how='any', subset=['text'])
 
-    return df_text
+    print(df_text)
 
+    return df_text
 
 
 def print_all_not_empty_text(text):
@@ -332,11 +345,13 @@ def get_text_df(file_name):
 def gather_corpora_from_file(file_name):
     # dataframe = get_text_df(file_name)
     dataframe = pd.read_csv(file_name)
+    print("dataframe ", dataframe)
     corpora = []
     for i in range(dataframe.shape[0]):
         cur = dataframe.loc[i, "text"]
         cur = cur.split()
         corpora.insert(i, cur)
+        # print(corpora)
     return corpora
 
 def get_word2vec_model(corpora):
@@ -357,12 +372,16 @@ def add_vectors_to_dataframe(file_name, w2v_model):
         cur = dataframe.loc[i, "text"]
         cur = cur.split()
         print("  element " + str(i) + " of " + str(dataframe.shape[0]))
-        if len(cur) < 30:
-            for j in range(len(cur)):
-                for v in range(100):
-                    dataframe.loc[i, j * 100 + v + 8] = w2v_model.wv[str(cur[j])][v]
+        len = 0
+        if len(cur) > 100:
+            len = 100
         else:
-            print(str(i) + " not included--")
+            len = len(cur)
+        for j in range(len):
+            for v in range(100):
+                dataframe.loc[i, j * 100 + v + 8] = w2v_model.wv[str(cur[j])][v]
+        # else:
+            # print(str(i) + " not included--")
     return dataframe
 
 def print_scores(clf, y_train, y_test, x_train, x_test):
@@ -410,7 +429,7 @@ def predict_without_text(file_name):
     X = df.iloc[:, 3:9]  # without target and without texts
     X = X.fillna(0)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=11)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=7)
 
     clf = RandomForestClassifier()
     clf.fit(X_train, y_train)
@@ -434,7 +453,11 @@ def predict_with_text(file_name):
     x = x.drop("text", axis=1)
     x = x.fillna(0)
 
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=0)
+    x = x.iloc[:,:4000]
+
+    # print(x)
+
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=7)
 
     clf = RandomForestClassifier()
     clf.fit(x_train, y_train)
@@ -444,3 +467,42 @@ def predict_with_text(file_name):
 
     target_names = ['class 0', 'class 1']
     print(classification_report(y_test, predicted_test, target_names=target_names))
+
+
+def predict_by_nn(file_name):
+    df = pd.read_csv(file_name)
+
+    # split
+    y = df["target"]
+    x = df.copy()
+    x = x.iloc[:, 3:]
+    x = x.drop("target", axis=1)
+    x = x.drop("text", axis=1)
+    x = x.fillna(0)
+
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=7)
+
+    # define the keras model
+    model = Sequential()
+    model.add(Dense(1000, input_dim=9806, activation='relu'))
+    model.add(Dense(100, activation='relu'))
+    model.add(Dense(10, activation='relu'))
+    model.add(Dense(1, activation='sigmoid'))
+
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+    history =  model.fit(x_train, y_train, validation_split=0.40, epochs=25, batch_size=128, verbose=1)
+
+    predicted_train = model.predict(x_train)
+    predicted_test = model.predict(x_test)
+
+    target_names = ['class 0', 'class 1']
+    # print(classification_report(y_test, predicted_test, target_names=target_names))
+
+    plt.plot(history.history['acc'])
+    plt.plot(history.history['val_acc'])
+    plt.title('Model accuracy')
+    plt.ylabel('Accuracy')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Test'], loc='upper left')
+    plt.show()
