@@ -9,12 +9,14 @@ def read_dataframe(filename, names):
                     encoding='cp1251', error_bad_lines=False)
 
 
+
 def pre_processing(dataset):
+    pd.options.mode.chained_assignment = None
     tic = time()
-    for i in range(1, len(dataset)):
+    for i in range(len(dataset)):
+        dataset[i] = dataset[i].lower()
         dataset[i] = re.sub(r'<[^>]+>', ' ', dataset[i])
         dataset[i] = dataset[i].replace(u'- ', '  ')
-        dataset[i] = dataset[i].lower()
         dataset[i] = dataset[i].replace(u'.', '  ')
         dataset[i] = dataset[i].replace(u'№', '  ')
         dataset[i] = dataset[i].replace(u',', '  ')
@@ -27,7 +29,45 @@ def pre_processing(dataset):
         dataset[i] = re.sub(r' +', ' ', dataset[i])
 
 
-        dataset[i] = dataset[i].replace(u' дч', u'  ')
+        dataset[i] = dataset[i].replace(u' дч', '  ')
+
+        dataset[i] = dataset[i].replace(u' б ', '  ')
+        dataset[i] = dataset[i].replace(u' в ', '  ')
+        dataset[i] = dataset[i].replace(u' г ', '  ')
+        dataset[i] = dataset[i].replace(r' г ', '  ')
+        dataset[i] = dataset[i].replace(u' д ', '  ')
+        dataset[i] = dataset[i].replace(u' е ', '  ')
+        dataset[i] = dataset[i].replace(u' ж ', '  ')
+        dataset[i] = dataset[i].replace(u' э ', '  ')
+        dataset[i] = dataset[i].replace(u' и ', '  ')
+        dataset[i] = dataset[i].replace(u' к ', '  ')
+        dataset[i] = dataset[i].replace(u' л ', '  ')
+        dataset[i] = dataset[i].replace(u' м ', '  ')
+        dataset[i] = dataset[i].replace(u' н ', '  ')
+        dataset[i] = dataset[i].replace(u' о ', '  ')
+        dataset[i] = dataset[i].replace(u' п ', '  ')
+        dataset[i] = dataset[i].replace(u' р ', '  ')
+        dataset[i] = dataset[i].replace(u' с ', '  ')
+        dataset[i] = dataset[i].replace(r' с ', '  ')
+        dataset[i] = dataset[i].replace(u' т ', '  ')
+        dataset[i] = dataset[i].replace(u' у ', '  ')
+        dataset[i] = dataset[i].replace(u' ф ', '  ')
+        dataset[i] = dataset[i].replace(u' х ', '  ')
+        dataset[i] = dataset[i].replace(u' ц ', '  ')
+        dataset[i] = dataset[i].replace(u' ч ', '  ')
+        dataset[i] = dataset[i].replace(u' ш ', '  ')
+        dataset[i] = dataset[i].replace(u' щ ', '  ')
+        dataset[i] = dataset[i].replace(u' й ', '  ')
+        dataset[i] = dataset[i].replace(u' э ', '  ')
+        dataset[i] = dataset[i].replace(u' ю ', '  ')
+        dataset[i] = dataset[i].replace(u' я ', '  ')
+        dataset[i] = dataset[i].replace(u' ы ', '  ')
+        dataset[i] = dataset[i].replace(u' ь ', '  ')
+        dataset[i] = dataset[i].replace(u' ъ ', '  ')
+
+
+
+
         dataset[i] = dataset[i].replace(u' берем ', u'беременность ')
         dataset[i] = dataset[i].replace(u' наследственность не отягощена', u'наследственность_не_отягощена ')
 
@@ -119,7 +159,7 @@ def pre_processing(dataset):
         dataset[i] = dataset[i].replace(u'ибс ', u'ишемическая_болезнь_сердца  ')
         dataset[i] = dataset[i].replace(u'ибс:', u'ишемическая_болезнь_сердца ')
         dataset[i] = dataset[i].replace(u'ибс', u'ишемическая_болезнь_сердца  ')
-        dataset[i] = dataset[i].replace(u'сд ', u'сахарный_диабет  ')
+        dataset[i] = dataset[i].replace(u'сд ', u' сахарный_диабет  ')
         dataset[i] = dataset[i].replace(u' стентиров ', u' стентирование  ')
         dataset[i] = dataset[i].replace(u' нс', u' нестабильная_стенокардия  ')
         dataset[i] = dataset[i].replace(u' хсн', u' хроническая_сердечная_недостаточность  ')
@@ -1115,6 +1155,7 @@ def pre_processing(dataset):
         dataset[i] = dataset[i].replace(u'головокружения', 'головокружение ')
         dataset[i] = dataset[i].replace(u'головокружений нет', 'головокружение_отрицает ')
         dataset[i] = dataset[i].replace(u'головокружение отрицает', 'головокружение_отрицает ')
+        dataset[i] = dataset[i].replace(u'головокружение  отрицает', 'головокружение_отрицает ')
         dataset[i] = dataset[i].replace(u'головокружений ', 'головокружение  ')
         dataset[i] = dataset[i].replace(u'физнагрузке ', 'физической нагрузке  ')
         dataset[i] = dataset[i].replace(u'самочувствие неплохое', 'самочувствие_хорошее  ')
@@ -1477,10 +1518,29 @@ def pre_processing(dataset):
         dataset[i] = dataset[i].replace(u'к о княжевская е а вр з о', ' ')
         dataset[i] = dataset[i].replace(u'жалоб ', ' ')
         dataset[i] = dataset[i].replace(u'боль в прекардиальной области', 'боль_в_области_сердца ')
-        dataset[i] = dataset[i].replace(u'ангинозные_боли_за_грудиной', 'ангинозные_боли ')
+        dataset[i] = dataset[i].replace(u'ангинозные_боли_за_грудиной', ' ангинозные_боли ')
+
+        dataset[i] = dataset[i].replace(u' повышение ад отрицает', ' повышение_ад_отрицает ')
+        dataset[i] = dataset[i].replace(u' хронические заболевания отрицает', ' хронические_заболевания_отрицает ')
+        dataset[i] = dataset[i].replace(u' гинекологический анамнез', ' гинекологический_анамнез ')
+        dataset[i] = dataset[i].replace(u' регулярные необильные', ' регулярные_необильные ')
+        dataset[i] = dataset[i].replace(u'регулярные необильные', ' регулярные_необильные ')
+
+        dataset[i] = dataset[i].replace(u' аллергия на', ' аллергия_на ')
+        dataset[i] = dataset[i].replace(u'гинекологический анамнез ', ' гинекологический_анамнез ')
+        dataset[i] = dataset[i].replace(u' регулярные обильные ',  ' регулярные_обильные ')
+        dataset[i] = dataset[i].replace(u'регулярные обильные ',  ' регулярные_обильные ')
+        dataset[i] = dataset[i].replace(u' аллергии отрицает ',  ' аллергию_отрицает ')
+
+
+
+        print(i, " of ", len(dataset), " ",dataset[i])
+
+
+
 
     toc = time()
-    # print(i, " out of ", len(dataset), ". Time ", toc - tic)
+    # print(" Time ", toc - tic)
     return dataset
 
 def morph_processing(dataset):
@@ -1502,74 +1562,3 @@ def morph_processing(dataset):
         else:
             dataset[i] = ''
     return dataset
-"""
-file = open('insults_all_classes.txt', 'r ')
-dataset = []
-for line in file.readlines():
-    dataset.append(line)
-dataset = pre_processing(dataset)
-wr = open('check.txt', 'w ')
-wr.writelines(dataset)
-wr.close()
-lsa = LSA.LSI(dataset)
-#sort = sorted(lsa.dictionary, key=lambda x: int(lsa.dictionary[x]), reverse=True)
-#for key in sort:
-#    print(key + '\t' + str(lsa.dictionary[key]))
-#for key in range(0, 5):
-#    print(lsa.tfidf_docs[key])
-#lsa.create_dictionary()
-#lsa.create_td_idf()
-#for key in range(0,5):
-#    print(key)
-lsa.build_count_vectorizer()
-lsa.calc_svd()
-lsa_res = lsa.product().toarray()
-mat_A = open('mat_A.txt','w ')
-mat_U = open('mat_U.txt','w ')
-mat_S = open('mat_S.txt','w ')
-mat_Vt = open('mat_Vt.txt','w ')
-mat_res = open('mat_res.txt','w ')
-
-row, col = lsa.A.shape
-for i in range(0,row):
-    line = ''
-    for j in range(0,col):
-        line += str(lsa.A[i][j]) + '\t'
-    mat_A.write(line + '\n ')
-mat_A.close()
-
-row, col = lsa.U.shape
-for i in range(0,row):
-    line = ''
-    for j in range(0,col):
-        line += str(round(lsa.U[i][j],6)) + '\t'
-    mat_U.write(line + '\n ')
-mat_U.close()
-
-row, col = lsa.A.shape
-for i in range(0,row):
-    line = ''
-    for j in range(0,col):
-        if i == j:
-            line += str(round(lsa.S[i],6)) + '\t'
-        else:
-            line += '0' + '\t'
-    mat_S.write(line + '\n ')
-mat_S.close()
-
-row, col = lsa.Vt.shape
-for i in range(0,row):
-    line = ''
-    for j in range(0,col):
-        line += str(round(lsa.Vt[i][j],6)) + '\t'
-    mat_Vt.write(line + '\n ')
-mat_Vt.close()
-
-row, col = lsa_res.shape
-for i in range(0,row):
-    line = ''
-    for j in range(0,col):
-        line += str(round(lsa_res[i][j],6)) + '\t'
-    mat_res.write(line + '\n ')
-mat_res.close()
-"""
