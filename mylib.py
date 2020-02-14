@@ -367,19 +367,22 @@ def add_vectors_to_dataframe(file_name, w2v_model):
     dataframe = dataframe.dropna(how='any', subset=['text'])
     dataframe = dataframe.reset_index()
 
+    print(dataframe.shape[0])
+
     print("======start adding vectors to dataset========")
     for i in range(dataframe.shape[0]):
         cur = dataframe.loc[i, "text"]
         cur = cur.split()
         print("  element " + str(i) + " of " + str(dataframe.shape[0]))
-        len = 0
+        leng = 0
         if len(cur) > 100:
-            len = 100
+            leng = 100
         else:
-            len = len(cur)
-        for j in range(len):
+            leng = len(cur)
+        for j in range(leng):
             for v in range(100):
                 dataframe.loc[i, j * 100 + v + 8] = w2v_model.wv[str(cur[j])][v]
+        print("len = ", leng)
         # else:
             # print(str(i) + " not included--")
     return dataframe
@@ -480,18 +483,17 @@ def predict_by_nn(file_name):
     x = x.drop("text", axis=1)
     x = x.fillna(0)
 
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=7)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=257)
 
     # define the keras model
     model = Sequential()
-    model.add(Dense(1000, input_dim=9806, activation='relu'))
-    model.add(Dense(100, activation='relu'))
+    model.add(Dense((x_train.shape[1] // 2), input_dim=x_train.shape[1], activation='relu'))
     model.add(Dense(10, activation='relu'))
     model.add(Dense(1, activation='sigmoid'))
 
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-    history =  model.fit(x_train, y_train, validation_split=0.40, epochs=25, batch_size=128, verbose=1)
+    history =  model.fit(x_train, y_train, validation_split=0.33, epochs=15, batch_size=200, verbose=1)
 
     predicted_train = model.predict(x_train)
     predicted_test = model.predict(x_test)

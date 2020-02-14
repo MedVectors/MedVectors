@@ -7,11 +7,10 @@ from time import time
 pd.set_option('display.max_columns', 300)
 
 
-# print(my.get_lines(my.txt_file_name))
-
-
-
+print(my.get_lines(my.txt_file_name))
 ttos = time()
+
+
 print("1. read xls...")
 df_xls = my.get_dataframe_from_xls()
  # use column 51 as indexes
@@ -79,10 +78,11 @@ print("\ncleaned 2 dataset shape: " + str(df.shape))
 my_corpora = my.gather_corpora_from_file(my.cleaned2)
 print("compile corpora... done")
 
-print(my_corpora.__sizeof__())
+print("size of corpora", my_corpora.__sizeof__())
 
+print("train w2v_model model... ")
 w2v_model = my.get_word2vec_model(my_corpora)
-print("train w2v_model model... done")
+print(" done")
 
 print("START ADDING VECTORS")
 df_with_vectors = my.add_vectors_to_dataframe(my.cleaned2, w2v_model)
