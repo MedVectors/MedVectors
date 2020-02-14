@@ -1,3 +1,4 @@
+from time import time
 
 import xlrd
 import re
@@ -25,7 +26,7 @@ apgar_file_name = "files/only_apgar.csv"
 relevant_columns_file_name = "files/short_dataset.csv"
 cleaned_text_file_name = "files/cleaned_text.csv"
 result_file_name = "files/final.csv"
-cleaned2 = "files/cleaned2.csv"
+# cleaned2 = "files/cleaned2.csv"
 
 
 def get_lines(filename):
@@ -34,7 +35,7 @@ def get_lines(filename):
         line = f.readline().decode('utf8')
         counter = 1
         while line:
-            print(line)
+            # print(line)
             text.insert(counter, line.strip())
             line = f.readline().decode('utf8')# .decode(utf8)
             counter += 1
@@ -84,16 +85,25 @@ def get_list_of_ids_and_texts():
     ids_and_text = combine_ids_and_texts(get_ids(list_for_ids), get_texts(list_for_texts))
     return ids_and_text
 
+def preprocess(df):
+    for i in range(df.shape[0]):
+        cur = df.loc[i, "text"]
+        cur = cur.split()
+        cur = pp.pre_processing(cur)
+        print(i + 1, "out of ", df.shape[0], " ", cur)
+        df.df.loc[i, "text"] = cur
+    return df
+
 
 def get_dataframe_from_txt():
     ids = get_ids(split_lines(get_lines(txt_file_name)))
     texts = get_texts(get_lines(txt_file_name))
     df = pd.DataFrame(list(zip(ids, texts)), columns=["id", "text"])
-    for i in range(df.shape[0]):
-        cur = df.loc[i]
-        cur = pp.pre_processing(cur)
-        print(i + 1, "out of ", df.shape[0], " ", cur[1])
-        df.loc[i] = cur
+    # for i in range(df.shape[0]):
+    #     cur = df.loc[i]
+    #     cur = pp.pre_processing(cur)
+    #     print(i + 1, "out of ", df.shape[0], " ", cur[1])
+    #     df.loc[i] = cur
     return df
 
 
@@ -145,13 +155,16 @@ def drop_duplicate_line(df, dataset_size, new_col_name):
 
 
 def get_unduplicated_lines(df):
+    tos = time()
     print(" step 1")
     print("  rows: " + df.shape[0].__str__())
     df = df.reset_index()
     df = df.sort_values("id")
     df = drop_duplicate_line(df, df.shape[0] - 1, "t1")
     print("  duplicated: " + df["id"].duplicated().sum().__str__())
+    print("time for step 1 ", time()-tos)
 
+    tos = time()
     print(" step 2")
     print("  rows: " + df.shape[0].__str__())
     df = df.reset_index()
@@ -159,7 +172,9 @@ def get_unduplicated_lines(df):
     df = df.sort_values("id")
     df = drop_duplicate_line(df, df.shape[0] - 1, "t2")
     print("  duplicated: " + df["id"].duplicated().sum().__str__())
+    print("time for step 2 ", time()-tos)
 
+    tos = time()
     print(" step 3")
     print("  rows: " + df.shape[0].__str__())
     df = df.reset_index()
@@ -167,7 +182,9 @@ def get_unduplicated_lines(df):
     df = df.sort_values("id")
     df = drop_duplicate_line(df, df.shape[0] - 1, "t3")
     print("  duplicated: " + df["id"].duplicated().sum().__str__())
+    print("time for step 3 ", time()-tos)
 
+    tos = time()
     print(" step 4")
     print("  rows: " + df.shape[0].__str__())
     df = df.reset_index()
@@ -175,7 +192,9 @@ def get_unduplicated_lines(df):
     df = df.sort_values("id")
     df = drop_duplicate_line(df, df.shape[0] - 1, "t4")
     print("  duplicated: " + df["id"].duplicated().sum().__str__())
+    print("time for step 4 ", time()-tos)
 
+    tos = time()
     print(" step 5")
     print("  rows: " + df.shape[0].__str__())
     df = df.reset_index()
@@ -183,7 +202,9 @@ def get_unduplicated_lines(df):
     df = df.sort_values("id")
     df = drop_duplicate_line(df, df.shape[0] - 1, "t5")
     print("  duplicated: " + df["id"].duplicated().sum().__str__())
+    print("time for step 5 ", time()-tos)
 
+    tos = time()
     print(" step 6")
     print("  rows: " + df.shape[0].__str__())
     df = df.reset_index()
@@ -191,6 +212,7 @@ def get_unduplicated_lines(df):
     df = df.sort_values("id")
     df = drop_duplicate_line(df, df.shape[0] - 1, "t6")
     print("  duplicated: " + df["id"].duplicated().sum().__str__())
+    print("time for step 6 ", time()-tos)
 
     return df
 
@@ -316,6 +338,7 @@ def put_text_in_one_colunm(file_name):
     df_text = df_text.drop("text_4", axis=1)
 
     df_text = df_text.dropna(how='any', subset=['text'])
+    df_text = df_text.reset_index()
 
     print(df_text)
 
@@ -328,13 +351,6 @@ def print_all_not_empty_text(text):
         if cur != "":
             print(str(i) + ":  " + str(cur))
 
-
-def get_text_df(file_name):
-    dataframe = pd.read_csv(file_name)
-    dataframe = dataframe.drop("Unnamed: 0", axis=1)
-    dataframe = dataframe.dropna(how='any', subset=['text'])
-    dataframe = dataframe.reset_index()
-    return dataframe
 
 def gather_corpora_from_file(file_name):
     # dataframe = get_text_df(file_name)
@@ -377,8 +393,6 @@ def add_vectors_to_dataframe(file_name, w2v_model):
             for v in range(100):
                 dataframe.loc[i, j * 100 + v + 8] = w2v_model.wv[str(cur[j])][v]
         print("len = ", leng)
-        # else:
-            # print(str(i) + " not included--")
     return dataframe
 
 def print_scores(clf, y_train, y_test, x_train, x_test):
