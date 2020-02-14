@@ -1,7 +1,6 @@
 
 import xlrd
 import re
-import pandas as pd
 import numpy as np
 from sklearn import metrics
 from sklearn.metrics import accuracy_score, classification_report
@@ -9,25 +8,24 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from gensim.test.utils import get_tmpfile
 from gensim.models import Word2Vec
-import preprocessing as pp
 import matplotlib.pyplot as plt
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential
 from keras.layers import Dense
-import mylib as my
 import pandas as pd
+import preprocessing as pp
 
 txt_file_name = "C:/Users/admin/Downloads/Telegram Desktop/anamnesis-fixed-perinatal.txt"
 utf8 = "utf8"
 xls_file_name = "C:/Users/admin/Downloads/Telegram Desktop/perinatal.xlsx"
 sheet_name = "L1"
 concatenated_dataframe_file_name = "files/result_no_duplicates.csv"
-apgar_file_name = "only_apgar.csv"
-relevant_columns_file_name = "short_dataset.csv"
-cleaned_text_file_name = "cleaned_text.csv"
-result_file_name = "final.csv"
-cleaned2 = "cleaned2.csv"
+apgar_file_name = "files/only_apgar.csv"
+relevant_columns_file_name = "files/short_dataset.csv"
+cleaned_text_file_name = "files/cleaned_text.csv"
+result_file_name = "files/final.csv"
+cleaned2 = "files/cleaned2.csv"
 
 
 def get_lines(filename):
@@ -97,8 +95,6 @@ def get_dataframe_from_txt():
         print(i + 1, "out of ", df.shape[0], " ", cur[1])
         df.loc[i] = cur
     return df
-
-
 
 
 def get_sheet_from_xls(file_name):
@@ -205,8 +201,6 @@ def save_dataframe_to_file(dataframe, file_name):
 
 def concatenate_dataframes(df1, df2):
     result = pd.concat([df1, df2], axis=1, sort=True)
-    # убрать те где текст нан
-    # result = result.dropna(how='any', subset=['text'])
     return result
 
 
@@ -356,7 +350,7 @@ def gather_corpora_from_file(file_name):
 
 def get_word2vec_model(corpora):
     path = get_tmpfile("word2vec.model")
-    model = Word2Vec(corpora, size=100, window=5, min_count=1, workers=4)
+    model = Word2Vec(corpora, size=100, window=3, min_count=1, workers=4)
     model.train(corpora, total_examples=model.corpus_count, epochs=model.corpus_count)
     model.save("word2vec.model")
     return model
@@ -426,6 +420,9 @@ def predict_without_text(file_name):
     print("prediction (no text)...")
 
     df = pd.read_csv(file_name)
+
+    # TODO
+    df = df.fillna(0)
 
     # split
     y = df["target"]
