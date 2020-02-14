@@ -85,13 +85,13 @@ def get_list_of_ids_and_texts():
     ids_and_text = combine_ids_and_texts(get_ids(list_for_ids), get_texts(list_for_texts))
     return ids_and_text
 
+
 def preprocess(df):
-    for i in range(df.shape[0]):
-        cur = df.loc[i, "text"]
-        cur = cur.split()
-        cur = pp.pre_processing(cur)
-        print(i + 1, "out of ", df.shape[0], " ", cur)
-        df.df.loc[i, "text"] = cur
+    df = df.dropna(subset=["text"])
+    df = df.drop("level_0", axis=1)
+    df = df.reset_index()
+    df = df.drop("level_0", axis=1)
+    df = pp.pre_processing(df["text"])
     return df
 
 
@@ -340,7 +340,7 @@ def put_text_in_one_colunm(file_name):
     df_text = df_text.dropna(how='any', subset=['text'])
     df_text = df_text.reset_index()
 
-    print(df_text)
+    # print(df_text)
 
     return df_text
 
