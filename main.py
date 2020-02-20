@@ -70,33 +70,28 @@ ttos = time()
 # print(" time:", time()-tos7)
 
 
-tos8 = time()
-print("9. compile corpora and train w2v_model model... ")
-my_corpora = wm.gather_corpora_from_file(f.short_df_fn)
-wm.train_w2v_model(my_corpora)
-print(" done")
-print(" time:", time()-tos8)
-
-# tos9 = time()
-# w2v_model = Word2Vec.load("word2vec.model")
-# # w2v_model = Word2Vec.load('model.txt')
-# words = list(w2v_model.wv.vocab)
-# print(words)
-# print(w2v_model['анамнез'])
-#
+# tos8 = time()
+# print("8. compile corpora and train w2v_model model... ")
+# my_corpora = wm.gather_corpora_from_file(f.short_df_fn)
+# wm.train_w2v_model(my_corpora)
 # print(" done")
-# print(" time:", time()-tos9)
+# print(" time:", time()-tos8)
 
-# tos11 = time()
-# print("11. START ADDING VECTORS")
-# df_with_vectors = my.add_vectors_to_dataframe(f.cleaned_text_file_name, w2v_model)
-# print("adding vectors ... done")
-# print(" with vectors dataframe size: " + str(df_with_vectors.shape))
-# print(" time:", time()-tos11)
-#
-# my.save_dataframe_to_file(df_with_vectors, f.result_file_name)
-# print(" dataset with vectors has been saved to file")
-#
+
+tos9 = time()
+print("10. START ADDING VECTORS")
+w2v_model = Word2Vec.load("word2vec.model")
+
+df_with_vectors = my.add_vectors_to_dataframe(f.short_df_fn, w2v_model)
+
+print("adding vectors ... done")
+print(" with vectors df size: ",  df_with_vectors.shape)
+
+my.save_df_to_file(df_with_vectors, f.result_fn)
+print(" dataset with vectors has been saved to file", f.result_fn)
+print(" time:", time()-tos9)
+
+
 # print("predict apgar using only numbers")
 # p.predict_without_text(f.result_file_name)
 # p.predict_with_text(f.result_file_name)

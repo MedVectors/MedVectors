@@ -4,8 +4,14 @@ import pandas as pd
 from lib import preprocessing as pp
 
 
-def save_dataframe_to_file(dataframe, file_name):
+def save_df_to_file(dataframe, file_name):
     dataframe.to_csv(file_name)
+
+
+def preprocess(fn):
+    df = pd.read_csv(fn, index_col=0)
+    df = pp.pre_processing(df[["text", "t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","t11","t12","t13","t14","t15","t16","t17","t18","t19"]])
+    return df
 
 
 def leav_only_overlap_rows(dataset_file_name):
@@ -13,6 +19,39 @@ def leav_only_overlap_rows(dataset_file_name):
     df = df.dropna(subset=["Апгар1"])
     df = df.dropna(subset=["id"])
     return df
+
+
+def print_lines(lines):
+    for i in lines:
+        print(i)
+
+def get_dead_indexes(sheet):
+    dead = []
+    for i in range(sheet.nrows):
+        if sheet.cell_value(i, 23) != "":
+            print(i, sheet.cell_value(i, 23))
+            dead.append(i)
+    return dead
+
+
+def print_sheet_information(sheet):
+    print("Строк всего " + sheet.nrows.__str__())
+    print("Столбцов всего " + sheet.ncols.__str__())
+
+    print("НАЗВАНИЯ СТОЛБЦОВ")
+    for i in range(sheet.ncols):
+        print(i, sheet.cell_value(0, i))
+
+    print("Содержимое строки 1")
+    print(sheet.row_values(0))
+
+    print("строки где смерть")
+    for i in get_dead_indexes(sheet):
+        print(sheet.row_values(i))
+
+
+
+
 
 # def concatenate_dataframes(df1, df2):
 #     result = pd.concat([df1, df2], axis=1, sort=True)
@@ -30,12 +69,6 @@ def leav_only_overlap_rows(dataset_file_name):
 #             line = f.readline().decode('utf8')# .decode(utf8)
 #             counter += 1
 #     return text
-
-
-def print_lines(lines):
-    for i in lines:
-        print(i)
-
 
 # def split_lines(lines):
 #     splited_lines = []
@@ -76,11 +109,6 @@ def print_lines(lines):
 #     return ids_and_text
 
 
-def preprocess(fn):
-    df = pd.read_csv(fn, index_col=0)
-    df = pp.pre_processing(df[["text", "t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","t11","t12","t13","t14","t15","t16","t17","t18","t19"]])
-    return df
-
 
 # def get_dataframe_from_txt():
 #     ids = get_ids(split_lines(get_lines(f.txt_file_name)))
@@ -95,29 +123,6 @@ def preprocess(fn):
 #     return sheet
 
 
-def get_dead_indexes(sheet):
-    dead = []
-    for i in range(sheet.nrows):
-        if sheet.cell_value(i, 23) != "":
-            print(i, sheet.cell_value(i, 23))
-            dead.append(i)
-    return dead
-
-
-def print_sheet_information(sheet):
-    print("Строк всего " + sheet.nrows.__str__())
-    print("Столбцов всего " + sheet.ncols.__str__())
-
-    print("НАЗВАНИЯ СТОЛБЦОВ")
-    for i in range(sheet.ncols):
-        print(i, sheet.cell_value(0, i))
-
-    print("Содержимое строки 1")
-    print(sheet.row_values(0))
-
-    print("строки где смерть")
-    for i in get_dead_indexes(sheet):
-        print(sheet.row_values(i))
 
 
 # resulting method for reading xls file to dataframe
@@ -315,51 +320,54 @@ def print_sheet_information(sheet):
 #             print(str(i) + ":  " + str(cur))
 
 
-def gather_corpora_from_file(file_name):
-    df = pd.read_csv(file_name, index_col=0)
-    corpora = []
-    df = df.reset_index()
-    for i in range(df.shape[0]):
-        cur = df.loc[i, "text"]
-        cur = cur.split()
-        corpora.insert(i, cur)
-    return corpora
+# def gather_corpora_from_file(file_name):
+#     df = pd.read_csv(file_name, index_col=0)
+#     corpora = []
+#     df = df.reset_index()
+#     for i in range(df.shape[0]):
+#         cur = df.loc[i, "text"]
+#         cur = cur.split()
+#         corpora.insert(i, cur)
+#     return corpora
 
-def get_word2vec_model(corpora):
-    path = get_tmpfile("word2vec.model")
-    model = Word2Vec(corpora, size=100, window=3, min_count=3, workers=4)
-
-    print("model: ")
-    print(model)
-    print("model corpus_count " , model.corpus_count)
-
-    model.train(corpora, total_examples=model.corpus_count, epochs=model.corpus_count)
-    model.save("word2vec.model")
-    return model
+# def get_word2vec_model(corpora):
+#     path = get_tmpfile("word2vec.model")
+#     model = Word2Vec(corpora, size=100, window=3, min_count=3, workers=4)
+#
+#     print("model: ")
+#     print(model)
+#     print("model corpus_count " , model.corpus_count)
+#
+#     model.train(corpora, total_examples=model.corpus_count, epochs=model.corpus_count)
+#     model.save("word2vec.model")
+#     return model
 
 def add_vectors_to_dataframe(file_name, w2v_model):
-    dataframe = pd.read_csv(file_name)
-    dataframe = dataframe.drop("Unnamed: 0", axis=1)
-    dataframe = dataframe.dropna(how='any', subset=['text'])
-    dataframe = dataframe.reset_index()
-
-    print(dataframe.shape[0])
+    df = pd.read_csv(file_name, index_col=0)
+    df = df.reset_index()
+    number_of_rows = df.shape[0]
+    number_of_columns = df.shape[1]
+    word_vectors = w2v_model.wv
 
     print("======start adding vectors to dataset========")
-    for i in range(dataframe.shape[0]):
-        cur = dataframe.loc[i, "text"]
-        cur = cur.split()
-        print("  element " + str(i) + " of " + str(dataframe.shape[0]))
-        leng = 0
-        if len(cur) > 100:
-            leng = 100
+    for current_row in range(number_of_rows):
+        current_str = str(df.loc[current_row, "text"])
+        current_str = current_str.split()
+        print("  element ", current_row, " of ", number_of_rows)
+        if len(current_str) > 100:
+            leng_of_str = 100
         else:
-            leng = len(cur)
-        for j in range(leng):
-            for v in range(100):
-                dataframe.loc[i, j * 100 + v + 8] = w2v_model.wv[str(cur[j])][v]
-        print("len = ", leng)
-    return dataframe
+            leng_of_str = len(current_str)
+
+        for word_number in range(leng_of_str):
+            if str(current_str[word_number]) in word_vectors.vocab:
+                for element_of_vector in range(w2v_model.vector_size):
+                    df.loc[current_row, word_number * w2v_model.vector_size + element_of_vector + number_of_columns] \
+                            = w2v_model.wv[str(current_str[word_number])][element_of_vector]
+            else:
+                print("not in vocab ", str(current_str[word_number]))
+        print("len = ", leng_of_str)
+    return df
 
 
 

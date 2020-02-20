@@ -16,4 +16,4 @@ short_df_fn = "files/short_df.csv"
 
 apgar_file_name = "../files/only_apgar.csv"
 cleaned_text_file_name = "../files/cleaned_text.csv"
-result_file_name = "../files/final.csv"
+result_fn = "files/final.csv"
