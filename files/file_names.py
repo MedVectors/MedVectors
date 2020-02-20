@@ -8,7 +8,7 @@ xls_file_name = "C:/Users/admin/Downloads/Telegram Desktop/perinatal.xlsx"
 sheet_name = "L1"
 xls_to_csv_fn = "files/xls_to_csv.csv"
 
-concatenated_dataframe_file_name = "../files/result_no_duplicates.csv"
+concatenated_df_fn = "files/concatenated.csv"
 apgar_file_name = "../files/only_apgar.csv"
 relevant_columns_file_name = "../files/short_dataset.csv"
 cleaned_text_file_name = "../files/cleaned_text.csv"

@@ -25,26 +25,26 @@ ttos = time()
 # print(" done, time:", time()-tos2)
 
 
-tos3 = time()
-print("3. solve duplicates in txt...")
-df_texts = d.get_unduplicated_lines()
-print(" duplicates solved!")
-df_texts = df_texts.set_index(df_texts.loc[:, "id"].values) # use column id as indexes
-my.save_dataframe_to_file(df_texts, f.no_dupicates_fn)
-print("\ndf txt without duplicates size: " + str(df_texts.shape))
-print(" time:", time()-tos3)
+# tos3 = time()
+# print("3. solve duplicates in txt...")
+# df_texts = d.get_unduplicated_lines()
+# print(" duplicates solved!")
+# df_texts = df_texts.set_index(df_texts.loc[:, "id"].values) # use column id as indexes
+# my.save_dataframe_to_file(df_texts, f.no_dupicates_fn)
+# print("\ndf txt without duplicates size: " + str(df_texts.shape))
+# print(" time:", time()-tos3)
 
 
-# tos4 = time()
-# print("4. concatenate dataframes...")
-# concatenated_df = my.concatenate_dataframes(df_xls, df_texts)
-# print(" done")
-# print(" concatenated dataframe size: " + str(concatenated_df.shape))
-# print(" time:", time()-tos4)
-#
-# print("save to file...")
-# my.save_dataframe_to_file(concatenated_df, my.concatenated_dataframe_file_name)
-# print("saved to " + my.concatenated_dataframe_file_name)
+tos4 = time()
+print("4. concatenate dataframes...")
+df_xls = pd.read_csv(f.xls_to_csv_fn, index_col=0)
+df_texts = pd.read_csv(f.no_dupicates_fn, index_col=0)
+concatenated_df = pd.concat([df_xls, df_texts], axis=1, sort=True)
+print(" done")
+print(" concatenated dataframe size: " + str(concatenated_df.shape))
+my.save_dataframe_to_file(concatenated_df, f.concatenated_df_fn)
+print(" time:", time()-tos4)
+
 
 # tos5 = time()
 # print("5. drop rows without apgar values")
