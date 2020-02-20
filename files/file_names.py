@@ -9,6 +9,8 @@ sheet_name = "L1"
 xls_to_csv_fn = "files/xls_to_csv.csv"
 
 concatenated_df_fn = "files/concatenated.csv"
+overlap_concatenated_fn = "files/overlap_concatenated.csv"
+
 apgar_file_name = "../files/only_apgar.csv"
 relevant_columns_file_name = "../files/short_dataset.csv"
 cleaned_text_file_name = "../files/cleaned_text.csv"
