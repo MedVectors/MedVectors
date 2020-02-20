@@ -2,6 +2,7 @@
 txt_file_name = "C:/Users/admin/Downloads/Telegram Desktop/anamnesis-fixed-perinatal.txt"
 id_and_text_fn = "files/id_and_text.csv"
 utf8 = "utf8"
+no_dupicates_fn = "files/no_duplicates.csv"
 
 xls_file_name = "C:/Users/admin/Downloads/Telegram Desktop/perinatal.xlsx"
 sheet_name = "L1"
