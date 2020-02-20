@@ -1,23 +1,8 @@
-from time import time
-
-import xlrd
-import re
-import numpy as np
-from sklearn import metrics
-from sklearn.metrics import accuracy_score, classification_report
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
 from gensim.test.utils import get_tmpfile
 from gensim.models import Word2Vec
-import matplotlib.pyplot as plt
-from sklearn.metrics import classification_report
-from sklearn.model_selection import train_test_split
-from keras.models import Sequential
-from keras.layers import Dense
 import pandas as pd
-import preprocessing as pp
+from lib import preprocessing as pp
 
-import files.file_names as f
 
 def save_dataframe_to_file(dataframe, file_name):
     dataframe.to_csv(file_name)
@@ -91,12 +76,9 @@ def print_lines(lines):
 #     return ids_and_text
 
 
-def preprocess(df):
-    df = df.dropna(subset=["text"])
-    df = df.drop("level_0", axis=1)
-    df = df.reset_index()
-    df = df.drop("level_0", axis=1)
-    df = pp.pre_processing(df["text"])
+def preprocess(fn):
+    df = pd.read_csv(fn, index_col=0)
+    df = pp.pre_processing(df[["text", "t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","t11","t12","t13","t14","t15","t16","t17","t18","t19"]])
     return df
 
 
@@ -243,60 +225,60 @@ def leave_only_relevant_columns(file_name):
     return df[["apgar", "szrp", "OAA", "abortion", "caesarean", "GB", "CHD", "text_1", "text_2", "text_3", "text_4"]] # ,  "text_5", "text_6"]]
 
 
-def replace_nan_with_empty(df):
-    for i in range(df.shape[0]):
-        cur = df.loc[i, "text_1"]
-        if cur == "nan nan nan nan":
-            df.loc[i, "text_1"] = ""
-    return df
+# def replace_nan_with_empty(df):
+#     for i in range(df.shape[0]):
+#         cur = df.loc[i, "text"]
+#         if cur == "nan nan nan nan":
+#             df.loc[i, "text_1"] = ""
+#     return df
 
-def remove_single_letters(text):
-    text = re.sub(r" а ", " ", text)
-    text = re.sub(r" б ", " ", text)
-    text = re.sub(r" в ", " ", text)
-    text = re.sub(r" г ", " ", text)
-    text = re.sub(r" д ", " ", text)
-    text = re.sub(r" е ", " ", text)
-    text = re.sub(r" ж ", " ", text)
-    text = re.sub(r" э ", " ", text)
-    text = re.sub(r" и ", " ", text)
-    text = re.sub(r" к ", " ", text)
-    text = re.sub(r" л ", " ", text)
-    text = re.sub(r" м ", " ", text)
-    text = re.sub(r" н ", " ", text)
-    text = re.sub(r" о ", " ", text)
-    text = re.sub(r" п ", " ", text)
-    text = re.sub(r" р ", " ", text)
-    text = re.sub(r" с ", " ", text)
-    text = re.sub(r" т ", " ", text)
-    text = re.sub(r" у ", " ", text)
-    text = re.sub(r" ф ", " ", text)
-    text = re.sub(r" х ", " ", text)
-    text = re.sub(r" ц ", " ", text)
-    text = re.sub(r" ч ", " ", text)
-    text = re.sub(r" ш ", " ", text)
-    text = re.sub(r" щ ", " ", text)
-    text = re.sub(r" й ", " ", text)
-    text = re.sub(r" э ", " ", text)
-    text = re.sub(r" ю ", " ", text)
-    text = re.sub(r" я ", " ", text)
-    text = re.sub(r" ы ", " ", text)
-    text = re.sub(r" ь ", " ", text)
-    text = re.sub(r" ъ ", " ", text)
-    return text
+# def remove_single_letters(text):
+#     text = re.sub(r" а ", " ", text)
+#     text = re.sub(r" б ", " ", text)
+#     text = re.sub(r" в ", " ", text)
+#     text = re.sub(r" г ", " ", text)
+#     text = re.sub(r" д ", " ", text)
+#     text = re.sub(r" е ", " ", text)
+#     text = re.sub(r" ж ", " ", text)
+#     text = re.sub(r" э ", " ", text)
+#     text = re.sub(r" и ", " ", text)
+#     text = re.sub(r" к ", " ", text)
+#     text = re.sub(r" л ", " ", text)
+#     text = re.sub(r" м ", " ", text)
+#     text = re.sub(r" н ", " ", text)
+#     text = re.sub(r" о ", " ", text)
+#     text = re.sub(r" п ", " ", text)
+#     text = re.sub(r" р ", " ", text)
+#     text = re.sub(r" с ", " ", text)
+#     text = re.sub(r" т ", " ", text)
+#     text = re.sub(r" у ", " ", text)
+#     text = re.sub(r" ф ", " ", text)
+#     text = re.sub(r" х ", " ", text)
+#     text = re.sub(r" ц ", " ", text)
+#     text = re.sub(r" ч ", " ", text)
+#     text = re.sub(r" ш ", " ", text)
+#     text = re.sub(r" щ ", " ", text)
+#     text = re.sub(r" й ", " ", text)
+#     text = re.sub(r" э ", " ", text)
+#     text = re.sub(r" ю ", " ", text)
+#     text = re.sub(r" я ", " ", text)
+#     text = re.sub(r" ы ", " ", text)
+#     text = re.sub(r" ь ", " ", text)
+#     text = re.sub(r" ъ ", " ", text)
+#     return text
 
-def remove_spaces(df):
-    for i in range(df.shape[0]):
-        text = df.loc[i, "text_1"]
-        text = "  " + text
-        text = re.sub(r"nan", "", text)
-        text = text.lower()
-        text = remove_single_letters(text)
-        text = remove_single_letters(text)
-        text = text.strip()
-        text = re.sub(r"  ", "", text)
-        df.loc[i, "text_1"] = text
-        return df
+# def remove_spaces(df):
+#     for i in range(df.shape[0]):
+#         text = df.loc[i, "text_1"]
+#         text = "  " + text
+#         text = re.sub(r"nan", "", text)
+#         text = text.lower()
+#         text = remove_single_letters(text)
+#         text = remove_single_letters(text)
+#         text = text.strip()
+#         text = re.sub(r"  ", "", text)
+#         df.loc[i, "text_1"] = text
+#         return df
 
 
 def put_text_in_one_colunm(file_name):

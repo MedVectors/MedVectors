@@ -1,12 +1,7 @@
 import pandas as pd
-from lib import mylib as my
-import lib.txt_to_csv as txt
+from lib import mylib as my, preprocessing as pp
 from files import file_names as f
-from lib import prediction as p
-from lib import xls_to_csv as xls
 from time import time
-import re
-import lib.duplicates as d
 
 pd.set_option('display.max_columns', 300)
 
@@ -45,23 +40,29 @@ ttos = time()
 # my.save_dataframe_to_file(concatenated_df, f.concatenated_df_fn)
 # print(" time:", time()-tos4)
 
-tos5 = time()
-print("5. drop rows without apgar values")
-overlap_rows_df = my.leav_only_overlap_rows(f.concatenated_df_fn)
-my.save_dataframe_to_file(overlap_rows_df, f.overlap_concatenated_fn)
-print(" done")
-print(" time:", time()-tos5)
-
-# tos6 = time()
-# print("6. preprocess texts")
-# only_apgar_dataset = my.preprocess(only_apgar_dataset)
+# tos5 = time()
+# print("5. drop rows without apgar values")
+# overlap_rows_df = my.leav_only_overlap_rows(f.concatenated_df_fn)
+# my.save_dataframe_to_file(overlap_rows_df, f.overlap_concatenated_fn)
 # print(" done")
-# print(" apgar dataset size: " ,only_apgar_dataset.shape)
-# print(" time:", time()-tos6)
+# print(" time:", time()-tos5)
 
-# my.save_dataframe_to_file(only_apgar_dataset, my.apgar_file_name)
-# print("new dataset with apgar values saved to file " + my.apgar_file_name)
-# print("only apgar dataframe size: " + str(only_apgar_dataset.shape))
+tos6 = time()
+print("6. preprocess texts")
+df = pp.preproc()
+my.save_dataframe_to_file(df, f.after_text_preprocessing_fn)
+print(" done")
+print(" apgar dataset size: " ,df.shape)
+print(" time:", time()-tos6)
+
+
+
+
+# df = df.rename(columns={'target': 'apgar'})
+
+# df['target'] = df['apgar'].apply(lambda x: 1 if x > 7 else 0)
+# df = df.drop("apgar", axis=1)
+# print(df[['target']].sum())
 
 
 # tos7 = time()
