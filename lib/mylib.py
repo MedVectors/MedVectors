@@ -202,27 +202,21 @@ def print_sheet_information(sheet):
 
 
 
-def leave_only_relevant_columns(file_name):
-    df = pd.read_csv(file_name)
-
-    df = df.rename(columns={'Возраст_мать': 'mother_age'})
-    df = df.rename(columns={'Антенатальная': 'antenal'})
-    df = df.rename(columns={'сзрп': 'szrp'})
-    df = df.rename(columns={'ОАА': 'OAA'})
-    df = df.rename(columns={'аборты': 'abortion'})
-    df = df.rename(columns={'кесарево': 'caesarean'})
-    df = df.rename(columns={'ГБ_насл': 'GB'})
-    df = df.rename(columns={'ИБС_насл': 'CHD'})
-    df = df.rename(columns={'Апгар1': 'apgar'})
-    df = df.rename(columns={'text': 'text'})
-    df = df.rename(columns={'t1': 'text_1'})
-    df = df.rename(columns={'t2': 'text_2'})
-    df = df.rename(columns={'t3': 'text_3'})
-    df = df.rename(columns={'t4': 'text_4'})
-    df = df.rename(columns={'t5': 'text_5'})
-    df = df.rename(columns={'t6': 'text_6'})
-
-    return df[["apgar", "szrp", "OAA", "abortion", "caesarean", "GB", "CHD", "text_1", "text_2", "text_3", "text_4"]] # ,  "text_5", "text_6"]]
+# def leave_only_relevant_columns(file_name):
+#     df = pd.read_csv(file_name, index_col=0)
+#     df = df.rename(columns={'Возраст_мать': 'mother_age'})
+#     df = df.rename(columns={'Антенатальная': 'antenal'})
+#     df = df.rename(columns={'сзрп': 'szrp'})
+#     df = df.rename(columns={'ОАА': 'OAA'})
+#     df = df.rename(columns={'аборты': 'abortion'})
+#     df = df.rename(columns={'кесарево': 'caesarean'})
+#     df = df.rename(columns={'ГБ_насл': 'GB'})
+#     df = df.rename(columns={'ИБС_насл': 'CHD'})
+#     df = df.rename(columns={'Апгар1': 'apgar'})
+#     df['target'] = df['apgar'].apply(lambda x: 1 if x > 7 else 0)
+#     df = df[["target", "szrp", "OAA", "abortion", "caesarean", "GB", "CHD", "text"]]
+#     print(df)
+#     return df
 
 
 # def replace_nan_with_empty(df):
@@ -281,61 +275,64 @@ def leave_only_relevant_columns(file_name):
 #         return df
 
 
-def put_text_in_one_colunm(file_name):
-    df = pd.read_csv(file_name)
-    df = df.drop("Unnamed: 0", axis=1)
-    df = df.rename(columns={'target': 'apgar'})
+# def put_text_in_one_colunm(file_name):
+#     df = pd.read_csv(file_name)
+#     df = df.drop("Unnamed: 0", axis=1)
+#     df = df.rename(columns={'target': 'apgar'})
+#
+#     df['target'] = df['apgar'].apply(lambda x: 1 if x > 7 else 0)
+#     df = df.drop("apgar", axis=1)
+#     # print(df[['target']].sum())
+#
+#     df_text = df.copy()
+#     df_text["text_1"] = df_text["text_1"].astype(str)
+#     df_text["text_2"] = df_text["text_2"].astype(str)
+#     df_text["text_3"] = df_text["text_3"].astype(str)
+#     df_text["text_4"] = df_text["text_4"].astype(str)
+#     df_text["text_1"] = df_text["text_1"] + " " + df_text["text_2"]
+#     df_text["text_1"] = df_text["text_1"] + " " + df_text["text_3"]
+#     df_text["text_1"] = df_text["text_1"] + " " + df_text["text_4"]
+#
+#     df_text = replace_nan_with_empty(df_text)
+#     df_text = remove_spaces(df_text)
+#     df_text = df_text.rename(columns={'text_1': 'text'})
+#     df_text = df_text.drop("text_2", axis=1)
+#     df_text = df_text.drop("text_3", axis=1)
+#     df_text = df_text.drop("text_4", axis=1)
+#
+#     df_text = df_text.dropna(how='any', subset=['text'])
+#     df_text = df_text.reset_index()
+#
+#     # print(df_text)
+#
+#     return df_text
 
-    df['target'] = df['apgar'].apply(lambda x: 1 if x > 7 else 0)
-    df = df.drop("apgar", axis=1)
-    # print(df[['target']].sum())
 
-    df_text = df.copy()
-    df_text["text_1"] = df_text["text_1"].astype(str)
-    df_text["text_2"] = df_text["text_2"].astype(str)
-    df_text["text_3"] = df_text["text_3"].astype(str)
-    df_text["text_4"] = df_text["text_4"].astype(str)
-    df_text["text_1"] = df_text["text_1"] + " " + df_text["text_2"]
-    df_text["text_1"] = df_text["text_1"] + " " + df_text["text_3"]
-    df_text["text_1"] = df_text["text_1"] + " " + df_text["text_4"]
-
-    df_text = replace_nan_with_empty(df_text)
-    df_text = remove_spaces(df_text)
-    df_text = df_text.rename(columns={'text_1': 'text'})
-    df_text = df_text.drop("text_2", axis=1)
-    df_text = df_text.drop("text_3", axis=1)
-    df_text = df_text.drop("text_4", axis=1)
-
-    df_text = df_text.dropna(how='any', subset=['text'])
-    df_text = df_text.reset_index()
-
-    # print(df_text)
-
-    return df_text
-
-
-def print_all_not_empty_text(text):
-    for i in range(text.shape[0]):
-        cur = text.loc[i, "text_1"]
-        if cur != "":
-            print(str(i) + ":  " + str(cur))
+# def print_all_not_empty_text(text):
+#     for i in range(text.shape[0]):
+#         cur = text.loc[i, "text_1"]
+#         if cur != "":
+#             print(str(i) + ":  " + str(cur))
 
 
 def gather_corpora_from_file(file_name):
-    # dataframe = get_text_df(file_name)
-    dataframe = pd.read_csv(file_name)
-    print("dataframe ", dataframe)
+    df = pd.read_csv(file_name, index_col=0)
     corpora = []
-    for i in range(dataframe.shape[0]):
-        cur = dataframe.loc[i, "text"]
+    df = df.reset_index()
+    for i in range(df.shape[0]):
+        cur = df.loc[i, "text"]
         cur = cur.split()
         corpora.insert(i, cur)
-        # print(corpora)
     return corpora
 
 def get_word2vec_model(corpora):
     path = get_tmpfile("word2vec.model")
-    model = Word2Vec(corpora, size=100, window=3, min_count=1, workers=4)
+    model = Word2Vec(corpora, size=100, window=3, min_count=3, workers=4)
+
+    print("model: ")
+    print(model)
+    print("model corpus_count " , model.corpus_count)
+
     model.train(corpora, total_examples=model.corpus_count, epochs=model.corpus_count)
     model.save("word2vec.model")
     return model

@@ -1,7 +1,10 @@
 import pandas as pd
+from gensim.models import Word2Vec
+
 from lib import mylib as my
 from files import file_names as f
 from lib import correlation as s
+from lib import w2v_model as wm
 
 from time import time
 
@@ -58,28 +61,32 @@ ttos = time()
 # print(" time:", time()-tos6)
 #
 
-tos7 = time()
-print("7. keep only relevant columns...")
-df = s.leave_only_relevant_columns(f.after_text_preprocessing_fn)
-my.save_dataframe_to_file(df, f.short_df_fn)
-print(" done")
-print(" short dataframe size: ", df.shape)
-print(" time:", time()-tos7)
+# tos7 = time()
+# print("7. keep only relevant columns...")
+# df = s.leave_only_relevant_columns(f.after_text_preprocessing_fn)
+# my.save_dataframe_to_file(df, f.short_df_fn)
+# print(" done")
+# print(" short dataframe size: ", df.shape)
+# print(" time:", time()-tos7)
 
+
+tos8 = time()
+print("9. compile corpora and train w2v_model model... ")
+my_corpora = wm.gather_corpora_from_file(f.short_df_fn)
+wm.train_w2v_model(my_corpora)
+print(" done")
+print(" time:", time()-tos8)
 
 # tos9 = time()
-# print("9. compile corpora... ")
-# my_corpora = my.gather_corpora_from_file(my.cleaned_text_file_name)
+# w2v_model = Word2Vec.load("word2vec.model")
+# # w2v_model = Word2Vec.load('model.txt')
+# words = list(w2v_model.wv.vocab)
+# print(words)
+# print(w2v_model['анамнез'])
+#
 # print(" done")
-# print(" size of corpora", my_corpora.__sizeof__())
 # print(" time:", time()-tos9)
-#
-# tos10 = time()
-# print("10. train w2v_model model... ")
-# w2v_model = my.get_word2vec_model(short_df["text"])
-# print(" done")
-# print(" time:", time()-tos10)
-#
+
 # tos11 = time()
 # print("11. START ADDING VECTORS")
 # df_with_vectors = my.add_vectors_to_dataframe(f.cleaned_text_file_name, w2v_model)
