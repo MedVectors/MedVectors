@@ -29,4 +29,4 @@ def read_xls():
     df_xls.drop("Дата время рождения", axis=1, inplace=True)
     df_xls.drop("дата рождения мамы", axis=1, inplace=True)
     df_xls.drop("срок", axis=1, inplace=True)
-    my.save_dataframe_to_file(df_xls, f.xls_to_csv_fn)
+    my.save_df_to_file(df_xls, f.xls_to_csv_fn)

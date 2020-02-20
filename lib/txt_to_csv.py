@@ -26,4 +26,4 @@ def get_ids_and_texts(filename):
 def read_txt_to_csv():
     ids, texts = get_ids_and_texts(f.txt_file_name)
     df_texts = pd.DataFrame(list(zip(ids, texts)), columns=["id", "text"])
-    my.save_dataframe_to_file(df_texts, f.id_and_text_fn)
+    my.save_df_to_file(df_texts, f.id_and_text_fn)
