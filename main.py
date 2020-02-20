@@ -1,6 +1,8 @@
 import pandas as pd
-from lib import mylib as my, preprocessing as pp
+from lib import mylib as my
 from files import file_names as f
+from lib import correlation as s
+
 from time import time
 
 pd.set_option('display.max_columns', 300)
@@ -47,32 +49,22 @@ ttos = time()
 # print(" done")
 # print(" time:", time()-tos5)
 
-tos6 = time()
-print("6. preprocess texts")
-df = pp.preproc()
-my.save_dataframe_to_file(df, f.after_text_preprocessing_fn)
-print(" done")
-print(" apgar dataset size: " ,df.shape)
-print(" time:", time()-tos6)
-
-
-
-
-# df = df.rename(columns={'target': 'apgar'})
-
-# df['target'] = df['apgar'].apply(lambda x: 1 if x > 7 else 0)
-# df = df.drop("apgar", axis=1)
-# print(df[['target']].sum())
-
-
-# tos7 = time()
-# print("7. keep only relevant columns...")
-# short_df = my.leave_only_relevant_columns(f.apgar_file_name) # columns with highest correlation
-# print("save to file " + f.relevant_columns_file_name)
-# my.save_dataframe_to_file(short_df, f.relevant_columns_file_name)
+# tos6 = time()
+# print("6. preprocess texts")
+# df = pp.preproc()
+# my.save_dataframe_to_file(df, f.after_text_preprocessing_fn)
 # print(" done")
-# print(" short dataframe size: " + str(short_df.shape))
-# print(" time:", time()-tos7)
+# print(" apgar dataset size: " ,df.shape)
+# print(" time:", time()-tos6)
+#
+
+tos7 = time()
+print("7. keep only relevant columns...")
+df = s.leave_only_relevant_columns(f.after_text_preprocessing_fn)
+my.save_dataframe_to_file(df, f.short_df_fn)
+print(" done")
+print(" short dataframe size: ", df.shape)
+print(" time:", time()-tos7)
 
 
 # tos9 = time()

@@ -12,7 +12,8 @@ concatenated_df_fn = "files/concatenated.csv"
 overlap_concatenated_fn = "files/overlap_concatenated.csv"
 after_text_preprocessing_fn = "files/after_text_preprocessing.csv"
 
+short_df_fn = "files/short_df.csv"
+
 apgar_file_name = "../files/only_apgar.csv"
-relevant_columns_file_name = "../files/short_dataset.csv"
 cleaned_text_file_name = "../files/cleaned_text.csv"
 result_file_name = "../files/final.csv"
